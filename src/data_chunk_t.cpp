@@ -27,12 +27,14 @@ data_chunk_t::data_chunk_t(const char *data) {
     // Chunk data size
     memcpy(&chunk_data_size, data + 4, 4);
     chunk_data_size = le32toh(chunk_data_size);
+    // Add the header size ("data" & size)
+    chunk_data_size += 8;
 
     // Data
-    this->data = (char*) malloc(chunk_data_size);
-    memcpy(this->data, data, chunk_data_size);
+    this->data.d8 = (signed char*) malloc(data_size());
+    memcpy(this->data.d8, data + 4, data_size());
 }
 
 data_chunk_t::~data_chunk_t() {
-    free(data);
+    free(data.d8);
 }

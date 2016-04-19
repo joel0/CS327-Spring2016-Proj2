@@ -19,6 +19,7 @@ public:
 public:
     wav(std::ifstream& input);
     ~wav();
+    long sample(unsigned int index);
 };
 
 #endif //CS327_2_0_WAV_H

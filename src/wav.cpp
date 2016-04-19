@@ -50,3 +50,18 @@ wav::~wav() {
     delete riff_type_ptr;
     delete fmt_chunk_ptr;
 }
+
+long wav::sample(unsigned int index) {
+    switch (fmt_chunk_ptr->bytes_per_sample) {
+        case 1:
+            return data_chunks[0]->data.d8[index];
+        case 2:
+            return data_chunks[0]->data.d16[index];
+        case 4:
+            return data_chunks[0]->data.d32[index];
+        case 8:
+            return data_chunks[0]->data.d64[index];
+        default:
+            throw "Unknown bytes per sample";
+    }
+}

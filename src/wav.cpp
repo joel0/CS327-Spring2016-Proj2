@@ -43,12 +43,13 @@ wav::wav(std::ifstream& input) {
             throw "Error reading data chunk";
         }
         data_chunks.push_back(new data_chunk_t(data_chunk));
+        free(data_chunk);
     } while (cursor < riff_type_ptr->file_size);
 }
 
 wav::~wav() {
     for (unsigned int i = 0; i < data_chunks.size(); i++) {
-        free(data_chunks[i]);
+        delete data_chunks[i];
     }
     delete riff_type_ptr;
     delete fmt_chunk_ptr;

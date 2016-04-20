@@ -25,7 +25,9 @@ public:
     long find_max_sample();
     long max_amplitude();
     unsigned int sample_count();
+
     void amplify(float factor);
+    void reverse();
 };
 
 #endif //CS327_2_0_WAV_H

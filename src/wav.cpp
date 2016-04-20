@@ -150,3 +150,14 @@ void wav::amplify(float factor) {
         set_sample(i, new_val);
     }
 }
+
+void wav::reverse() {
+    long temp;
+    unsigned int far_end;
+    for (unsigned int i = 0; i < sample_count() / 2; i++) {
+        far_end = sample_count() - i;
+        temp = sample(i);
+        set_sample(i, sample(far_end));
+        set_sample(far_end, temp);
+    }
+}

@@ -32,6 +32,11 @@ public:
     void reverse();
     void echo(float weight, int delay_samples);
     void echo_seconds(float weight, float delay);
+    void trim_start(float seconds);
+    void trim_end(float seconds);
+
+private:
+    unsigned int seconds_to_samples(float seconds);
 };
 
 #endif //CS327_2_0_WAV_H

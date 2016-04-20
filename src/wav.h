@@ -26,8 +26,12 @@ public:
     long max_amplitude();
     unsigned int sample_count();
 
+    void expand(int samples);
+
     void amplify(float factor);
     void reverse();
+    void echo(float weight, int delay_samples);
+    void echo_seconds(float weight, float delay);
 };
 
 #endif //CS327_2_0_WAV_H

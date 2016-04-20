@@ -68,6 +68,7 @@ long wav::sample(unsigned int index) {
 }
 
 void wav::set_sample(unsigned int index, long value) {
+    value = value < max_amplitude() ? value : max_amplitude();
     switch (fmt_chunk_ptr->bits_per_sample / 8) {
         case 1:
             data_chunks[0]->data.d8[index] = (signed char) value;
@@ -160,4 +161,31 @@ void wav::reverse() {
         set_sample(i, sample(far_end));
         set_sample(far_end, temp);
     }
+}
+
+void wav::echo(float weight, int delay_samples) {
+    long buffer[delay_samples];
+    unsigned int buffer_index;
+    long temp;
+    expand(delay_samples);
+    for (buffer_index = 0; buffer_index < delay_samples; buffer_index++) {
+        buffer[buffer_index] = sample(buffer_index);
+    }
+
+    for (unsigned int i = buffer_index; i < sample_count(); i++) {
+        temp = sample(i);
+        temp += buffer[buffer_index] * weight;
+        set_sample(i, temp);
+        buffer[buffer_index] = temp;
+        buffer_index = (buffer_index + 1) % delay_samples;
+    }
+}
+
+void wav::expand(int samples) {
+    data_chunks[0]->expand(samples * fmt_chunk_ptr->bits_per_sample / 8);
+}
+
+void wav::echo_seconds(float weight, float delay) {
+    unsigned int samples = (unsigned int) (delay * fmt_chunk_ptr->sample_rate * fmt_chunk_ptr->bits_per_sample / 8);
+    echo(weight, samples);
 }

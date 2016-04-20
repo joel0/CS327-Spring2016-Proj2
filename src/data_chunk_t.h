@@ -23,6 +23,7 @@ public:
     inline unsigned int data_size() { return chunk_data_size - 8; };
     char* file_data();
     static unsigned int read_chunk_size(char* data);
+    void expand(int bytes);
 };
 
 #endif //CS327_2_0_DATA_CHUNK_H

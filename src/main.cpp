@@ -28,8 +28,9 @@ int main() {
     }
     std::cout << std::endl;
 
+    w->echo_seconds(0.2, 0.1);
     //w->amplify(0.5);
-    w->reverse();
+    //w->reverse();
     //w->fmt_chunk_ptr->sample_rate *= 2;
     //w->fmt_chunk_ptr->bytes_per_second *= 2;
 

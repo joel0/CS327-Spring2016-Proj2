@@ -56,3 +56,8 @@ char *data_chunk_t::file_data() {
 
     return out;
 }
+
+void data_chunk_t::expand(int bytes) {
+    chunk_data_size += bytes;
+    data.d8 = (signed char*) realloc(data.d8, chunk_data_size);
+}

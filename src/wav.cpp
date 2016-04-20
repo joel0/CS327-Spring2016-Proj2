@@ -47,7 +47,7 @@ wav::wav(std::ifstream& input) {
 }
 
 wav::~wav() {
-    for (int i = 0; i < data_chunks.size(); i++) {
+    for (unsigned int i = 0; i < data_chunks.size(); i++) {
         free(data_chunks[i]);
     }
     delete riff_type_ptr;

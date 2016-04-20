@@ -18,12 +18,22 @@ int main() {
     std::cout << w->data_chunks.size() << std::endl;
     std::cout << w->fmt_chunk_ptr->bits_per_sample << std::endl;
     std::cout << w->fmt_chunk_ptr->bytes_per_sample << std::endl;
+    std::cout << "max amp: " << w->max_amplitude() << std::endl;
+    std::cout << "Sample count: " << w->sample_count() << std::endl;
+    std::cout << "Max sample: " << w->find_max_sample() << std::endl;
 
     std::cout << std::endl;
     for (unsigned int i = 0; i < 800; i++) {
         printf("%d ", (int) w->sample(i));
     }
     std::cout << std::endl;
+
+    try {
+        w->save("c:\\Users\\joelm\\Downloads\\11k16bitpcm-2.wav");
+        std::cout << "Saved the file" << std::endl;
+    } catch (const char* ex) {
+        std::cout << ex << std::endl;
+    }
 
     return 0;
 }

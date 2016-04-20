@@ -21,6 +21,7 @@ public:
     data_chunk_t(const char* data);
     ~data_chunk_t();
     inline unsigned int data_size() { return chunk_data_size - 8; };
+    char* file_data();
     static unsigned int read_chunk_size(char* data);
 };
 

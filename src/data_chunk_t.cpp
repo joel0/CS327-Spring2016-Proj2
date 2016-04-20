@@ -32,9 +32,27 @@ data_chunk_t::data_chunk_t(const char *data) {
 
     // Data
     this->data.d8 = (signed char*) malloc(data_size());
-    memcpy(this->data.d8, data + 4, data_size());
+    memcpy(this->data.d8, data + 8, data_size());
 }
 
 data_chunk_t::~data_chunk_t() {
     free(data.d8);
+}
+
+// Don't forget to call free!
+char *data_chunk_t::file_data() {
+    char* out = (char*) malloc(chunk_data_size);
+    unsigned int temp32;
+
+    // Chunk ID
+    memcpy(out, chunk_ID, 4);
+
+    // Chunk Data Size
+    temp32 = htole32(data_size());
+    memcpy(out + 4, &temp32, 4);
+
+    // Data
+    memcpy(out + 8, data.d8, data_size());
+
+    return out;
 }

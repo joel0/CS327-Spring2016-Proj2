@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <fstream>
 #include <iostream>
 #include "wav.h"
 
@@ -52,7 +53,7 @@ wav::~wav() {
 }
 
 long wav::sample(unsigned int index) {
-    switch (fmt_chunk_ptr->bytes_per_sample) {
+    switch (fmt_chunk_ptr->bits_per_sample / 8) {
         case 1:
             return data_chunks[0]->data.d8[index];
         case 2:
@@ -64,4 +65,60 @@ long wav::sample(unsigned int index) {
         default:
             throw "Unknown bytes per sample";
     }
+}
+
+long wav::max_amplitude() {
+    return 1 << (fmt_chunk_ptr->bits_per_sample - 1);
+}
+
+long wav::find_max_sample() {
+    unsigned int sample_c = sample_count();
+    long max_sample = 0;
+    long s;
+    for (unsigned int i = 0; i < sample_c; i++) {
+        s = sample(i);
+        s = s < 0 ? -s : s;
+        if (s > max_sample) {
+            max_sample = s;
+        }
+    }
+    return max_sample;
+}
+
+unsigned int wav::sample_count() {
+    return data_chunks[0]->data_size() / (fmt_chunk_ptr->bits_per_sample / 8);
+}
+
+void wav::save(const char *file_name) {
+    char* buffer;
+    std::ofstream out(file_name, std::ios::out);
+
+    // RIFF Type Chunk
+    buffer = riff_type_ptr->file_data(data_chunks[0]->chunk_data_size);
+    out.write(buffer, riff_type_chunk_t::SIZE);
+    free(buffer);
+    if (out.bad()) {
+        out.close();
+        throw "Error writing the RIFF header";
+    }
+
+    // fmt chunk
+    buffer = fmt_chunk_ptr->file_data();
+    out.write(buffer, fmt_chunk_t::SIZE);
+    free(buffer);
+    if (out.bad()) {
+        out.close();
+        throw "Error writing the fmt chunk";
+    }
+
+    // Data Chunk
+    buffer = data_chunks[0]->file_data();
+    out.write(buffer, data_chunks[0]->chunk_data_size);
+    free(buffer);
+    if (out.bad()) {
+        out.close();
+        throw "Error writing the data";
+    }
+
+    out.close();
 }

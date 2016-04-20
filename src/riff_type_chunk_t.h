@@ -14,7 +14,7 @@ public:
 
 public:
     riff_type_chunk_t(const char* data);
-    char* file_data();
+    char* file_data(unsigned int data_size);
 };
 
 #endif //CS327_2_0_RIFF_TYPE_CHUNK_H

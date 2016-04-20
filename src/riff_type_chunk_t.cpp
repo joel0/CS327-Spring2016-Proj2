@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <endian.h>
+#include <malloc.h>
 #include "riff_type_chunk_t.h"
 #include "fmt_chunk_t.h"
 
@@ -30,4 +31,21 @@ riff_type_chunk_t::riff_type_chunk_t(const char *data) {
     if (strcmp(riff_type, "WAVE") != 0) {
         throw "RIFF type is incorrect (should be \"WAVE\")";
     }
+}
+
+// Don't forget to call free!
+char *riff_type_chunk_t::file_data(unsigned int data_size) {
+    char* out = (char*) malloc(SIZE);
+    // Chunk ID
+    memcpy(out, chunk_ID, 4);
+
+    // Chunk Data Size
+    // -8 for the "RIFF" & file size
+    data_size = htole32(SIZE + fmt_chunk_t::SIZE + data_size - 8);
+    memcpy(out + 4, &data_size, 4);
+
+    // RIFF Type
+    memcpy(out + 8, riff_type, 4);
+
+    return out;
 }

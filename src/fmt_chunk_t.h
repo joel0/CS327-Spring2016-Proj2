@@ -18,6 +18,7 @@ public:
     unsigned short bits_per_sample;
 public:
     fmt_chunk_t(const char* data);
+    char* file_data();
 };
 
 #endif //CS327_2_0_FMT_CHUNK_H

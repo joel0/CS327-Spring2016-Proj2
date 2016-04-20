@@ -19,7 +19,11 @@ public:
 public:
     wav(std::ifstream& input);
     ~wav();
+    void save(const char* file_name);
     long sample(unsigned int index);
+    long find_max_sample();
+    long max_amplitude();
+    unsigned int sample_count();
 };
 
 #endif //CS327_2_0_WAV_H

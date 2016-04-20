@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <endian.h>
+#include <malloc.h>
 #include "fmt_chunk_t.h"
 
 fmt_chunk_t::fmt_chunk_t(const char *data) {
@@ -62,4 +63,44 @@ fmt_chunk_t::fmt_chunk_t(const char *data) {
     if (bits_per_sample != 8 * bytes_per_sample / channel_numbers) {
         throw "fmt chunk bits per sample does not match the bytes per sample and channel count";
     }
+}
+
+// Don't forget to call free!
+char *fmt_chunk_t::file_data() {
+    char* out = (char*) malloc(SIZE);
+    unsigned int temp32;
+    unsigned short temp16;
+
+    // Chunk ID
+    memcpy(out, chunk_ID, 4);
+
+    // Chunk Data Size
+    temp32 = htole32(chunk_data_size);
+    memcpy(out + 4, &temp32, 4);
+
+    // Compression code
+    temp16 = htole16(compression_code);
+    memcpy(out + 8, &temp16, 2);
+
+    // Channel Numbers
+    temp16 = htole16(channel_numbers);
+    memcpy(out + 10, &temp16, 2);
+
+    // Sample rate
+    temp32 = htole32(sample_rate);
+    memcpy(out + 12, &temp32, 4);
+
+    // Bytes Per Second
+    temp32 = htole32(bytes_per_second);
+    memcpy(out + 16, &temp32, 4);
+
+    // Bytes Per Sample
+    temp16 = htole16(bytes_per_sample);
+    memcpy(out + 20, &temp16, 2);
+
+    // Bits Per Sample
+    temp16 = htole16(bits_per_sample);
+    memcpy(out + 22, &temp16, 2);
+
+    return out;
 }

@@ -58,6 +58,10 @@ char *data_chunk_t::file_data() {
 }
 
 void data_chunk_t::expand(int bytes) {
+    unsigned int old_size = chunk_data_size;
     chunk_data_size += bytes;
     data.d8 = (signed char*) realloc(data.d8, chunk_data_size);
+    for (; old_size < chunk_data_size; old_size++) {
+        data.d8[old_size] = 0;
+    }
 }

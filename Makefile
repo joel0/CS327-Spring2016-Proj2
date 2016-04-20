@@ -10,7 +10,7 @@ TARNAME=may_joel.assignment-1.10
 OFILES=$(ODIR)/main.o $(ODIR)/data_chunk_t.o $(ODIR)/fmt_chunk_t.o $(ODIR)/riff_type_chunk_t.o $(ODIR)/wav.o
 
 all: environment $(OFILES)
-	$(CXX) -o $(EXEDIR)/main $(OFILES) $(LDFLAGS)
+	$(CXX) -o $(EXEDIR)/wav $(OFILES) $(LDFLAGS)
 
 $(ODIR)/%.o: $(SDIR)/%.c
 	$(CC) -o $@ $^ -c $(CFLAGS)

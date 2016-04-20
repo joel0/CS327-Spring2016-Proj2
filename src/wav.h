@@ -30,7 +30,7 @@ public:
 
     void amplify(float factor);
     void reverse();
-    void echo(float weight, int delay_samples);
+    void echo(float weight, unsigned int delay_samples);
     void echo_seconds(float weight, float delay);
     void trim_start(float seconds);
     void trim_end(float seconds);

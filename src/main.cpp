@@ -9,12 +9,12 @@ int main(int argc, char* argv[]) {
     if (argc < 3) {
         std::cout << "Usage: wav in_file.wav out_file.wav [arguments]" << std::endl;
         std::cout << "\tAny number of arguments may be used in combination with each other." << std::endl;
-        std::cout << "\tThe arguments are applied left-to-right cumulatively.  The argument parsing" << std::endl;
-        std::cout << "\tis delicate, so please be careful to use the arguments properly." << std::endl;
+        std::cout << "\tThe arguments are applied left-to-right cumulatively.  The argument" << std::endl;
+        std::cout << "\tparsing is delicate, so please be careful to use the arguments properly." << std::endl;
         std::cout << "Arguments:" << std::endl;
-        std::cout << "\t-r\t\t\tReverses the audio file" << std::endl;
-        std::cout << "\t-a (f)\t\tAmplifies (or softens) the audio by the given factor as a float" << std::endl;
-        std::cout << "\t-e (f) (f)\tAdds an echo (or reverb) effect with the specified amplitude and delay" << std::endl;
+        std::cout << "\t-r\t\tReverses the audio file" << std::endl;
+        std::cout << "\t-a (f)\t\tAmplifies the audio by the given ratio as a float" << std::endl;
+        std::cout << "\t-e (f) (f)\tAdds an echo effect with the amplitude and delay" << std::endl;
         std::cout << "\t-ts (f)\t\tTrims the start of the file" << std::endl;
         std::cout << "\t-te (f)\t\tTrims the end of the file" << std::endl;
         return 0;

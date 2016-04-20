@@ -1,0 +1,32 @@
+WAV File Editor
+
+This program does some basic operations on .wav audio files.  After loading the
+file, it displays basic information about the file, such as the sample rate.  An
+input file and an output file must be specified as arguments.  The input file is
+not modified.  The input file is loaded to RAM, processed with the user-selected
+filters, then saved to the output file.  The user may select an arbitrary number
+of filters (or even none) to apply.  The filters are applied in the left-to-
+right order of how they appear as arguments after the input and output file
+names.  I have included a couple sample .wav files, because I am not confident
+that it works on all inputs.
+
+Build Instructions:
+1. make
+
+Execution Instructions:
+    bin/wav in_file out_file [arguments]
+Arguments:
+	-r              Reverses the audio file
+    -a (f)          Amplifies the audio by the given ratio as a float
+    -e (f) (f)      Adds an echo effect with the amplitude and delay
+    -ts (f)         Trims the start of the file
+	-te (f)         Trims the end of the file
+
+Example Usage:
+    bin/wav example1.wav out.wav -e 0.2 0.1
+    bin/wav example1.wav out.wav -ts 2.71 -te 3.42
+    bin/wav example2.wav out.wav -r
+
+Note: if an input file has multiple data segments, my program will exhibit
+undefined behavior!  To my understanding, most .wav files only contain one data
+segment.

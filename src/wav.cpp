@@ -162,7 +162,7 @@ void wav::reverse() {
     }
 }
 
-void wav::echo(float weight, int delay_samples) {
+void wav::echo(float weight, unsigned int delay_samples) {
     long buffer[delay_samples];
     unsigned int buffer_index;
     long temp;

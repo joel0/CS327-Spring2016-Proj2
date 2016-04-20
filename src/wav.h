@@ -21,9 +21,11 @@ public:
     ~wav();
     void save(const char* file_name);
     long sample(unsigned int index);
+    void set_sample(unsigned int index, long value);
     long find_max_sample();
     long max_amplitude();
     unsigned int sample_count();
+    void amplify(float factor);
 };
 
 #endif //CS327_2_0_WAV_H

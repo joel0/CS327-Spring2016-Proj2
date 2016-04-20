@@ -67,6 +67,25 @@ long wav::sample(unsigned int index) {
     }
 }
 
+void wav::set_sample(unsigned int index, long value) {
+    switch (fmt_chunk_ptr->bits_per_sample / 8) {
+        case 1:
+            data_chunks[0]->data.d8[index] = (signed char) value;
+            break;
+        case 2:
+            data_chunks[0]->data.d16[index] = (short) value;
+            break;
+        case 4:
+            data_chunks[0]->data.d32[index] = (int) value;
+            break;
+        case 8:
+            data_chunks[0]->data.d64[index] = value;
+            break;
+        default:
+            throw "Unknown bytes per sample";
+    }
+}
+
 long wav::max_amplitude() {
     return 1 << (fmt_chunk_ptr->bits_per_sample - 1);
 }
@@ -121,4 +140,13 @@ void wav::save(const char *file_name) {
     }
 
     out.close();
+}
+
+void wav::amplify(float factor) {
+    long new_val;
+    for (unsigned int i = 0; i < sample_count(); i++) {
+        new_val = (long) (sample(i) * factor);
+        new_val = new_val < max_amplitude() ? new_val : max_amplitude();
+        set_sample(i, new_val);
+    }
 }

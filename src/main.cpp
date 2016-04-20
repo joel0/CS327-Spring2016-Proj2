@@ -1,45 +1,96 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include "wav.h"
 
 using namespace std;
 
-int main() {
-    std::ifstream in("c:\\Users\\joelm\\Downloads\\11k16bitpcm.wav", ios::in);
+int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cout << "Usage: wav in_file.wav out_file.wav [arguments]" << std::endl;
+        std::cout << "\tAny number of arguments may be used in combination with each other." << std::endl;
+        std::cout << "\tThe arguments are applied left-to-right cumulatively.  The argument parsing" << std::endl;
+        std::cout << "\tis delicate, so please be careful to use the arguments properly." << std::endl;
+        std::cout << "Arguments:" << std::endl;
+        std::cout << "\t-r\t\t\tReverses the audio file" << std::endl;
+        std::cout << "\t-a (f)\t\tAmplifies (or softens) the audio by the given factor as a float" << std::endl;
+        std::cout << "\t-e (f) (f)\tAdds an echo (or reverb) effect with the specified amplitude and delay" << std::endl;
+        std::cout << "\t-ts (f)\t\tTrims the start of the file" << std::endl;
+        std::cout << "\t-te (f)\t\tTrims the end of the file" << std::endl;
+        return 0;
+    }
+
+    std::ifstream in(argv[1], ios::in);
     wav* w;
+    std::cout << "Loading audio file..." << std::endl;
     try {
         w = new wav(in);
     } catch (const char* ex) {
         std::cout << ex << std::endl;
+        return -1;
     }
     in.close();
-    std::cout << w->riff_type_ptr->file_size << std::endl;
-    std::cout << w->fmt_chunk_ptr->sample_rate << std::endl;
-    std::cout << w->data_chunks.size() << std::endl;
-    std::cout << w->fmt_chunk_ptr->bits_per_sample << std::endl;
-    std::cout << w->fmt_chunk_ptr->bytes_per_sample << std::endl;
-    std::cout << "max amp: " << w->max_amplitude() << std::endl;
-    std::cout << "Sample count: " << w->sample_count() << std::endl;
-    std::cout << "Max sample: " << w->find_max_sample() << std::endl;
-
     std::cout << std::endl;
-    for (unsigned int i = 0; i < 800; i++) {
-        printf("%d ", (int) w->sample(i));
+    std::cout << "Info:" << std::endl;
+    std::cout << "Sample rate: " << w->fmt_chunk_ptr->sample_rate << std::endl;
+    std::cout << "Bits per sample: " << w->fmt_chunk_ptr->bits_per_sample << std::endl;
+    std::cout << std::endl;
+    std::cout << "Processing:" << std::endl;
+
+    for (int i = 3; i < argc; i++) {
+        try {
+            if (strcmp(argv[i], "-r") == 0) {
+                std::cout << "Reversing..." << std::endl;
+                w->reverse();
+            } else if (strcmp(argv[i], "-a") == 0) {
+                if (++i == argc) {
+                    std::cout << "Argument required for -a" << std::endl;
+                    return -1;
+                }
+                std::cout << "Amplifying..." << std::endl;
+                w->amplify((float) atof(argv[i]));
+            } else if (strcmp(argv[i], "-e") == 0) {
+                if (++i == argc) {
+                    std::cout << "Arguments required for -e" << std::endl;
+                    return -1;
+                }
+                float weight = (float) atof(argv[i]);
+                if (++i == argc) {
+                    std::cout << "Two arguments required for -e" << std::endl;
+                    return -1;
+                }
+                std::cout << "Adding echo..." << std::endl;
+                w->echo_seconds(weight, (float) atof(argv[i]));
+            } else if (strcmp(argv[i], "-ts") == 0) {
+                if (++i == argc) {
+                    std::cout << "Argument required for -ts" << std::endl;
+                    return -1;
+                }
+                std::cout << "Trimming start..." << std::endl;
+                w->trim_start((float) atof(argv[i]));
+            } else if (strcmp(argv[i], "-te") == 0) {
+                if (++i == argc) {
+                    std::cout << "Argument required for -te" << std::endl;
+                    return -1;
+                }
+                std::cout << "Trimming end..." << std::endl;
+                w->trim_end((float) atof(argv[i]));
+            } else {
+                std::cout << "Unknown argument: " << argv[i] << std::endl;
+            }
+        } catch (const char* ex) {
+            std::cout << ex << std::endl;
+        }
     }
+
     std::cout << std::endl;
-
-    w->trim_start(3.0);
-    //w->echo_seconds(0.2, 0.1);
-    //w->amplify(0.5);
-    //w->reverse();
-    //w->fmt_chunk_ptr->sample_rate *= 2;
-    //w->fmt_chunk_ptr->bytes_per_second *= 2;
-
+    std::cout << "Saving..." << std::endl;
     try {
-        w->save("c:\\Users\\joelm\\Downloads\\11k16bitpcm-2.wav");
-        std::cout << "Saved the file" << std::endl;
+        w->save(argv[2]);
+        std::cout << "Saved" << std::endl;
     } catch (const char* ex) {
         std::cout << ex << std::endl;
+        return -1;
     }
 
     return 0;

@@ -36,7 +36,6 @@ wav::wav(std::ifstream& input) {
             throw "Error reading data chunk header";
         }
         data_chunk_size = data_chunk_t::read_chunk_size(data_chunk);
-        std::cout << "Chunk size: " << data_chunk_size << std::endl;
         data_chunk = (char*) realloc(data_chunk, data_chunk_size);
         input.read(data_chunk + 8, data_chunk_size - 8);
         cursor += input.gcount();
@@ -186,6 +185,28 @@ void wav::expand(int samples) {
 }
 
 void wav::echo_seconds(float weight, float delay) {
-    unsigned int samples = (unsigned int) (delay * fmt_chunk_ptr->sample_rate * fmt_chunk_ptr->bits_per_sample / 8);
-    echo(weight, samples);
+    echo(weight, seconds_to_samples(delay));
+}
+
+unsigned int wav::seconds_to_samples(float seconds) {
+    return (unsigned int) (seconds * fmt_chunk_ptr->sample_rate * fmt_chunk_ptr->bits_per_sample / 8);
+}
+
+void wav::trim_start(float seconds) {
+    unsigned int samples = seconds_to_samples(seconds);
+    if (samples > sample_count()) {
+        throw "You are trying to trim more than the file's duration.";
+    }
+    for (unsigned int i = samples; i < sample_count(); i++) {
+        set_sample(i - samples, sample(i));
+    }
+    expand(-samples);
+}
+
+void wav::trim_end(float seconds) {
+    unsigned int samples = seconds_to_samples(seconds);
+    if (samples > sample_count()) {
+        throw "You are trying to trim more than the file's duration.";
+    }
+    expand(-samples);
 }

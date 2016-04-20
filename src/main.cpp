@@ -90,8 +90,10 @@ int main(int argc, char* argv[]) {
         std::cout << "Saved" << std::endl;
     } catch (const char* ex) {
         std::cout << ex << std::endl;
+        delete w;
         return -1;
     }
+    delete w;
 
     return 0;
 }
